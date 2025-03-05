@@ -1,149 +1,107 @@
-✈️ Aviation Tracker - Plane Monitoring Discord Bot & Dashboard
-Aviation Tracker is a Discord bot that allows users to track planes in real time. With both OpenSky and ADS-B Exchange support, users can monitor takeoffs, landings, and even get screenshots of planes' live locations. It also comes with a web dashboard for easy management, including the ability to set up OpenSky credentials and manage your server settings.
-
-Features
-Track Planes: Use /track_plane ICAO24 to track a plane by its ICAO24 code.
-Stop Tracking: Use /stop_plane ICAO24 to stop tracking a plane.
-Live Map Screenshot: Get a live screenshot of the plane's location from globe.theairtraffic.com.
-OpenSky & ADS-B Exchange: Supports two different plane tracking sources.
-Web Dashboard: Set OpenSky credentials, manage your servers, and view plane activity.
-Subscription Model: $5/month for access to the premium OpenSky API with proxy rotation for better data.
-Admin & Moderation Tools: Only admins and mods can control tracking commands for each server.
 Installation
-1️⃣ Prerequisites
-Python 3.10+
-pip (Python's package installer)
-Discord Bot Token (Get yours from Discord Developer Portal)
-OpenSky Network Account (Optional)
-Stripe Account (for premium subscription support)
-2️⃣ Clone the Repository
-Start by cloning this repository to your local machine:
+Bot Setup
+Clone the Repository:
 
 bash
 Copy
 Edit
 git clone https://github.com/yourusername/aviation-tracker.git
 cd aviation-tracker
-3️⃣ Install Dependencies
-Next, install the required Python packages:
+Install Python Dependencies: Navigate to the bot directory and install the necessary dependencies:
+
+bash
+Copy
+Edit
+cd bot
+pip install -r requirements.txt
+Configure the Bot:
+
+Create a .env file in the bot/ directory and add your Discord bot token and OpenSky API credentials:
+ini
+Copy
+Edit
+DISCORD_TOKEN=your-discord-bot-token
+OPENAPI_USERNAME=your-opensky-username
+OPENAPI_PASSWORD=your-opensky-password
+Web App Setup
+Navigate to the web Directory:
+
+bash
+Copy
+Edit
+cd web
+Install Web App Dependencies: Install the required libraries for the web application:
 
 bash
 Copy
 Edit
 pip install -r requirements.txt
-4️⃣ Configure Environment Variables
-Create .env files in both the bot and web directories:
+Configure the Web App:
 
-Example for bot/.env
-plaintext
-Copy
-Edit
-DISCORD_TOKEN=YOUR_DISCORD_BOT_TOKEN
-Example for web/.env
-plaintext
-Copy
-Edit
-SECRET_KEY=your_secret_key_here
-STRIPE_SECRET_KEY=your_stripe_secret_key_here
-STRIPE_PRICE_ID=your_stripe_price_id_here
-5️⃣ Set Up Database
-By default, the app uses SQLite for database storage. It will create the necessary files (bot/database.sqlite and web/database.sqlite) on the first run.
+Set up your Stripe API credentials.
+Configure your database connection in web/config.py.
+Run the Web App: You can run the web application locally with:
 
-If you prefer to use PostgreSQL or MySQL, you can modify the database configurations in the bot/database.py and web/database.py files.
-
-6️⃣ Running the Bot & Web Dashboard
-Run the Discord Bot:
 bash
 Copy
 Edit
-cd bot
-python3 bot.py
-The bot should now be online and ready to accept commands on your Discord server.
+flask run
+Proxy Setup
+To use proxies for API requests, edit the proxies.json file in the root of the project and add your proxy list.
+Configuration
+The bot can be configured using the config.py file inside the bot/ directory. Here you can define:
 
-Run the Web Dashboard:
+Proxy rotation settings
+Logging configurations
+Discord bot prefix and settings
+OpenSky or ADS-B API keys and credentials
+Example Configuration for OpenSky API:
+python
+Copy
+Edit
+API_USERNAME = "your-opensky-username"
+API_PASSWORD = "your-opensky-password"
+Running the Bot
+To run the bot, execute the following command in the bot/ directory:
+
 bash
 Copy
 Edit
-cd web
-python3 app.py
-You can access the web dashboard by navigating to http://localhost:5000.
+python bot.py
+Alternatively, you can use systemd to run the bot as a service on Linux. To set this up:
 
-📡 Bot Commands
-Command	Description	Permissions
-/track_plane ICAO24	Start tracking a plane	Admin/Mods
-/stop_plane ICAO24	Stop tracking a plane	Admin/Mods
-/plane_screenshot ICAO24	Take a screenshot of the plane's location	Admin/Mods
-/set_opensky username password	Set OpenSky credentials	Admin/Mods
-/show_opensky	Show OpenSky credentials status	Admin/Mods
-🌐 Web Dashboard Features
-Page	Description
-/	Dashboard landing page
-/login	Login/Register page (email required)
-/servers	View and manage linked servers
-/subscribe	Subscribe for premium access (Stripe)
-⚙️ Configuration Files
-bot/config.py
-Modify this file to configure:
-
-Data Source: Choose between opensky or adsb for tracking data.
-Proxies: Enable or disable proxy rotation for premium accounts.
-proxies.json
-If you have access to proxies, you can list them here for proxy rotation:
-
-json
-Copy
-Edit
-[
-    {"http": "http://proxy1:port"},
-    {"http": "http://proxy2:port"}
-]
-💳 Premium Subscription
-A premium subscription allows access to the OpenSky API with proxy rotation. To subscribe, use the Stripe payment system integrated with the web dashboard.
-
-🧰 Running as a Service (Optional)
-For better management, you can run the bot as a service using systemd on Linux.
-
-Create a systemd service file at /etc/systemd/system/aviation_tracker.service:
-ini
-Copy
-Edit
-[Unit]
-Description=Aviation Tracker Discord Bot
-After=network.target
-
-[Service]
-User=youruser
-WorkingDirectory=/path/to/aviation-tracker/bot
-ExecStart=/usr/bin/python3 /path/to/aviation-tracker/bot/bot.py
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-Reload systemd and start the service:
+Copy the aviation_tracker.service file from the systemd/ directory to /etc/systemd/system/.
+Reload systemd and enable the service:
 bash
 Copy
 Edit
 sudo systemctl daemon-reload
 sudo systemctl enable aviation_tracker
 sudo systemctl start aviation_tracker
-🧑‍💻 Contributing
-Fork this repository
-Clone your fork
-Create a new branch (git checkout -b feature-name)
-Commit your changes (git commit -am 'Add new feature')
-Push to the branch (git push origin feature-name)
-Open a pull request
-⚠️ Security & Privacy
-Never hard-code sensitive keys directly in the code. Use .env files to manage environment variables securely.
-Be cautious when using proxies or third-party APIs to avoid data breaches or misuse.
-📞 Contact
-For support, please contact:
+Web App
+The web app is a Flask application that allows users to manage their subscriptions and integrate the bot with their Discord servers.
 
-[Your Support Email]
-Join our Discord: [Your Discord Invite Link]
-🚀 Ready to Track Planes?
-Once everything is set up, you can invite the bot to your server, set your OpenSky credentials, and start tracking planes in real-time!
+Visit the Web App: After running the Flask app (flask run), you can access the web interface at http://localhost:5000/.
 
+User Sign-Up and Subscription: Users can sign up, enter their Discord server details, and subscribe for $5 per month to use OpenSky API with proxy management.
+
+Payment Handling: Payment is processed through Stripe, and users can manage their subscription through the web interface.
+
+Usage
+Discord Bot Commands
+/plane ICAO24 [number] start: Start tracking a plane by its ICAO24 number.
+/plane ICAO24 [number] stop: Stop tracking the plane.
+/plane help: Get a list of available commands.
+/plane status: Get the current status of the plane being tracked (location, altitude, etc.).
+Web App Features
+User Registration: Users can create accounts to access plane tracking.
+Stripe Integration: Payment for OpenSky access.
+Server Configuration: Add server details to start tracking planes.
+Contributing
+Contributions are welcome! Please feel free to fork this repository, submit pull requests, or open issues if you encounter any bugs or have feature suggestions.
+
+License
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 
 
